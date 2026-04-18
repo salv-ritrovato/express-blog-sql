@@ -1,9 +1,18 @@
 const posts = require("../data/posts");
 
 // Index
-const allPosts = (req, res) => {
-    res.json(posts);
-};
+const index = (req, res) => {
+  const sql = 'SELECT * FROM posts';
+
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Query failed' });
+    }
+
+    res.json(results);
+  });
+}
 
 // Show
 const getPost = (req, res) => {
