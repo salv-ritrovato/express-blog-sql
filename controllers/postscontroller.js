@@ -1,17 +1,16 @@
-const posts = require("../data/posts");
+const connection = require("../database/db");
 
 // Index
-const index = (req, res) => {
-  const sql = 'SELECT * FROM posts';
+const allPosts = (req, res) => {
+    const sql = 'SELECT * FROM posts';
+    connection.query(sql, (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ error: 'Query failed' });
+        }
 
-  connection.query(sql, (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Query failed' });
-    }
-
-    res.json(results);
-  });
+        res.json(results);
+    });
 }
 
 // Show
@@ -45,13 +44,19 @@ const updatePost = (req, res) => {
 
 // Delete
 const deletePost = (req, res) => {
-    const id = Number(req.params.id);
-    const index = posts.findIndex(item => item.id === id);
-    if (index === -1) {
-        return res.status(404).json({ message: "Post inesistente" })
-    }
-    posts.splice(index, 1);
-    res.json({ message: "Post rimosso con successo" })
-};
+    const id = parseInt(req.params.id);
+    const sql = 'DELETE FROM posts WHERE id = ?';
+    connection.query(sql, [id], (err, result) => {
+        if (err) return res.status(500).json({ error: 'Delete failed' });
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                error: true,
+                message: 'Post not found'
+            });
+        }
+        res.sendStatus(204);
+    });
+
+}
 
 module.exports = { allPosts, getPost, createPost, updatePost, deletePost };

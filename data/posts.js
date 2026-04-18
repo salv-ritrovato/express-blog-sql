@@ -1,5 +1,5 @@
 // Array of posts for my blog
-const posts = [
+/* const posts = [
     {
         id: 1,
         titolo: "Primo post del blog",
@@ -37,4 +37,4 @@ const posts = [
     }
 ];
 
-module.exports = posts;
+module.exports = posts; */
